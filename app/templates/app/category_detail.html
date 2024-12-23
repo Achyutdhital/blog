@@ -1,0 +1,115 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block meta %}
+    <title>{{ category.name }} - My Blog</title>
+    <meta name="description" content="Discover articles and news in the {{ category.name }} category on My Blog.">
+    <meta name="keywords" content="{{ category.name }}, blog, news, articles">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ category.name }} - My Blog">
+    <meta property="og:description" content="Discover articles and news in the {{ category.name }} category on My Blog.">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% static 'app/assets/img/og-image.jpg' %}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ category.name }} - My Blog">
+    <meta name="twitter:description" content="Discover articles and news in the {{ category.name }} category on My Blog.">
+    <meta name="twitter:image" content="{% static 'app/assets/img/twitter-image.jpg' %}">
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumb-wrap">
+    <div class="container">
+        <h2 class="breadcrumb-title">{{ category.name }}</h2>
+        <ul class="breadcrumb-menu list-style">
+            <li><a href="/">Home</a></li>
+            <li>{{ category.name }}</li>
+        </ul>
+    </div>
+</div>
+<!-- Category Section Start -->
+<div class="category-wrap ptb-100">
+    <div class="container">
+        <h2>{{ category.name }}</h2>
+        {% if search_query %}
+            <h3>Search Results for "{{ search_query }}"</h3>
+        {% elif selected_tag %}
+            <h3>Posts tagged with "{{ selected_tag.name }}"</h3>
+        {% endif %}
+        <div class="row gx-55 gx-5">
+            <div class="col-lg-8">
+                <div class="row justify-content-center">
+                    {% for post in posts %}
+                    <div class="col-md-6">
+                        <div class="news-card-thirteen">
+                            <div class="news-card-img">
+                                <img src="{{ post.featured_image.url }}" alt="{{ post.image_alt_text }}">
+                                <a href="{% url 'app:category_detail' post.category.slug %}" class="news-cat">{{ post.category.name }}</a>
+                            </div>
+                            <div class="news-card-info">
+                                <h3><a href="{% url 'app:post_detail' post.slug %}">{{ post.title }}</a></h3>
+                                <ul class="news-metainfo list-style">
+                                    <li><i class="fi fi-rr-calendar-minus"></i><a href="{% url 'app:posts_by_date' year=post.published_date.year month=post.published_date.month %}">{{ post.published_date|date:"M d, Y" }}</a></li>
+                                    <li><i class="fi fi-rr-clock-three"></i>{{ post.reading_time }} Min Read</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <ul class="page-nav list-style text-center mt-20">
+                    <!-- Pagination logic here if needed -->
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <div class="sidebar-widget-two">
+                        <form action="#" class="search-box-widget">
+                            <input type="search" placeholder="Search">
+                            <button type="submit"> 
+                                <i class="fi fi-rr-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="sidebar-widget">
+                        <h3 class="sidebar-widget-title">Categories</h3>
+                        <ul class="category-widget list-style">
+                            {% for cat in categories %}
+                            <li><a href="{% url 'app:category_detail' cat.slug %}"><img src="{% static 'assets/img/icons/arrow-right.svg' %}" alt="Image">{{ cat.name }} <span>({{ cat.post_set.count }})</span></a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="sidebar-widget">
+                        <h3 class="sidebar-widget-title">Recent Posts</h3>
+                        <div class="pp-post-wrap">
+                            {% for recent_post in recent_posts %}
+                            <div class="news-card-one">
+                                <div class="news-card-img">
+                                    <img src="{{ recent_post.featured_image.url }}" alt="Image">
+                                </div>
+                                <div class="news-card-info">
+                                    <h3><a href="{% url 'app:post_detail' recent_post.slug %}">{{ recent_post.title }}</a></h3>
+                                    <ul class="news-metainfo list-style">
+                                        <li><i class="fi fi-rr-calendar-minus"></i><a href="{% url 'app:posts_by_date' year=recent_post.published_date.year month=recent_post.published_date.month %}">{{ recent_post.published_date|date:"M d, Y" }}</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="sidebar-widget">
+                        <h3 class="sidebar-widget-title">Popular Tags</h3>
+                        <ul class="tag-list list-style">
+                            {% for tag in popular_tags %}
+                            <li><a href="?tag={{ tag.slug }}">{{ tag.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Category Section End -->
+{% endblock %}

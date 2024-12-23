@@ -1,0 +1,219 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zxx">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    {% block meta %}
+      {% include 'app/_seo_meta.html' %}
+    {% endblock %}
+
+    {% block css %}
+      <!-- Link of CSS files -->
+      <link rel="stylesheet" href="{% static 'app/assets/css/bootstrap.min.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/assets/css/remixicon.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/assets/css/uicons-regular-rounded.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/assets/css/flaticon_baxo.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/assets/css/swiper.bundle.min.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/assets/css/aos.min.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/assets/css/header.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/assets/css/style.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/assets/css/footer.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/assets/css/responsive.css' %}" />
+      <link rel="stylesheet" href="{% static 'app/assets/css/dark-theme.css' %}" />
+    {% endblock %}
+
+    <title>
+      {% block title %}
+        Title Later
+      {% endblock %}
+    </title>
+    <link rel="icon" type="image/png" href="{% static 'app/assets/img/favicon.webp' %}" />
+  </head>
+  <body>
+    <!-- Preloader Start -->
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+      <div class="loader-section section-left"></div>
+      <div class="loader-section section-right"></div>
+    </div>
+    <!-- Preloader End -->
+
+    <!-- Theme Switcher Start -->
+    <div class="switch-theme-mode">
+      <label id="switch" class="switch">
+        <input type="checkbox" onchange="toggleTheme()" id="slider" />
+        <span class="slider round"></span>
+      </label>
+    </div>
+    <!-- Theme Switcher End -->
+
+    <!-- Start Navbar Area -->
+    <div class="navbar-area header-three" id="navbar" style="border-bottom-style: ridge;">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg">
+          <a class="navbar-brand" href="index.html">
+            <img class="logo-light" src="{{ about.logo.url }}" alt="logo" style="max-width: 132px;" />
+            <img class="logo-dark" src="{{ about.logo.url }}" alt="logo" style="max-width: 132px;" />
+          </a>
+          <button type="button" class="search-btn d-lg-none" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="flaticon-loupe"></i></button>
+          <a class="navbar-toggler" data-bs-toggle="offcanvas" href="#navbarOffcanvas" role="button" aria-controls="navbarOffcanvas">
+            <span class="burger-menu">
+              <span class="top-bar"></span>
+              <span class="middle-bar"></span>
+              <span class="bottom-bar"></span>
+            </span>
+          </a>
+          <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mx-auto">
+              <li class="nav-item">
+                <a href="/" class="nav-link active">Home</a>
+              </li>
+              {% comment %} <li class="nav-item">
+                <a href="javascript:void(0)" class="dropdown-toggle nav-link">Pages</a>
+                <ul class="dropdown-menu">
+                  <li class="nav-item">
+                    <a href="about.html" class="nav-link">About Us</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="contact.html" class="nav-link">Contact Us</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="team.html" class="nav-link">Team</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="author.html" class="nav-link">Author</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="privacy-policy.html" class="nav-link">Privacy Policy</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="terms-conditions.html" class="nav-link">Terms & Conditions</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="error-404.html" class="nav-link">404 Error Page</a>
+                  </li>
+                </ul>
+              </li> {% endcomment %}
+              {% for category in primary_categories %}
+                <li class="nav-item">
+                  <a href="{% url 'app:category_detail' category.slug %}" class="nav-link">{{ category.name }}</a>
+                </li>
+              {% endfor %}
+              {% if more_categories %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% for category in more_categories %}
+                      <a class="dropdown-item" href="{% url 'app:category_detail' category.slug %}">{{ category.name }}</a>
+                    {% endfor %}
+                  </div>
+                </li>
+              {% endif %}
+            </ul>
+            <div class="others-option d-flex align-items-center">
+              <div class="option-item">
+                <button type="button" class="search-btn" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="flaticon-loupe"></i></button>
+              </div>
+              {% comment %} <div class="option-item">
+                <a href="login.html" class="btn-two">Sign In</a>
+              </div> {% endcomment %}
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <!-- End Navbar Area -->
+
+    <!-- Start Search Modal -->
+    <div class="modal fade searchModal" id="searchModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form>
+            <input type="text" class="form-control" placeholder="Search here...." value="{{ request.GET.q }}" />
+            <button type="submit"><i class="fi fi-rr-search"></i></button>
+          </form>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="ri-close-line"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- End Search Modal -->
+    {% block content %}
+
+    {% endblock %}
+    <!-- Footer Start -->
+    <div class="container-fluid">
+      <div class="footer-wrap">
+        <div class="row align-items-center">
+          <div class="col-lg-4">
+            <p class="copyright-text">
+              Copyright <span>©</span><span>2025</span> {{ about.company_name }}
+            </p>
+          </div>
+          <div class="col-lg-4 text-center">
+            <ul class="social-profile list-style">
+              <li>
+                <a href="https://www.fb.com/" target="_blank"><i class="flaticon-facebook-1"></i></a>
+              </li>
+              <li>
+                <a href="https://www.twitter.com/" target="_blank"><i class="flaticon-twitter-1"></i></a>
+              </li>
+              <li>
+                <a href="https://www.instagram.com/" target="_blank"><i class="flaticon-instagram-2"></i></a>
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/" target="_blank"><i class="flaticon-linkedin"></i></a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-4">
+            <div class="footer-right">
+              <button class="subscribe-btn" data-bs-toggle="modal" data-bs-target="#newsletter-popup">Become a subscriber<i class="flaticon-right-arrow"></i></button>
+              <p>Get all the latest posts delivered straight to your inbox.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <button type="button" id="backtotop" class="position-fixed text-center border-0 p-0"><i class="ri-arrow-up-line"></i></button>
+
+    {% comment %} <!-- Newsletter Popup -->
+    <div class="modal fade" id="newsletter-popup" tabindex="-1" aria-labelledby="newsletter-popup" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <button type="button" class="btn_close" data-bs-dismiss="modal" aria-label="Close"><i class="fi fi-rr-cross"></i></button>
+          <div class="modal-body">
+            <div class="newsletter-bg bg-f"></div>
+            <div class="newsletter-content">
+              <img src="{% static 'app/assets/img/newsletter-icon.webp' %}" alt="Image" class="newsletter-icon" />
+              <h2>Join Our Newsletter & Read The New Posts First</h2>
+              <form action="#" class="newsletter-form">
+                <input type="email" placeholder="Email Address" />
+                <button type="button" class="btn-one">Subscribe<i class="flaticon-arrow-right"></i></button>
+              </form>
+              <div class="form-check checkbox">
+                <input class="form-check-input" type="checkbox" id="test_20" />
+                <label class="form-check-label" for="test_20">I've read and accept <a href="privacy-policy.html">Privacy Policy</a></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> {% endcomment %}
+    {% block js %}
+      <!-- Link of JS files -->
+      <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"></script>
+      <script src="{% static 'app/assets/js/bootstrap.bundle.min.js' %}"></script>
+      <script src="{% static 'app/assets/js/swiper-bundle.min.js' %}"></script>
+      <script src="{% static 'app/assets/js/fslightbox.js' %}"></script>
+      <script src="{% static 'app/assets/js/aos.min.js' %}"></script>
+      <script src="{% static 'app/assets/js/main.js' %}"></script>
+    {% endblock %}
+  </body>
+</html>

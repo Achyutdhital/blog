@@ -1,0 +1,552 @@
+{% extends "app/base.html" %}
+{%load static%}
+
+
+{% block content %}
+        <!-- Trending News Start -->
+        <div class="container">
+            {%if trending_posts%}
+            <div class="trending-box-two">
+                <span>Trending</span>
+                <div class="trending-slider-two swiper">
+                    <div class="swiper-wrapper">
+                        {% for post in trending_posts %}
+                        <div class="swiper-slide news-card-one">
+                            <div class="news-card-img">
+                                {% if post.featured_image %}
+                                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                                {% endif %}
+                            </div>
+                            <div class="news-card-info">
+                                <a href="{% url 'app:category_detail' post.category.slug %}" class="news-cat">
+                                    {{ post.category.name }}
+                                </a>
+                                <h3>
+                                    <a href="{% url 'app:post_detail' post.slug %}">{{ post.title }}</a>
+                                </h3>
+                                <ul class="news-metainfo list-style">
+                                    <li>
+                                        <i class="fi fi-rr-calendar-minus"></i>
+                                        <a href="#">{{ post.published_date|date:"M d, Y" }}</a>
+                                    </li>
+                                    <li>
+                                        <i class="fi fi-rr-clock-three"></i>
+                                        {{ post.reading_time }} Min Read
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="trending-btn">
+                        <div class="trending-btn-prev">
+                            <img src="{% static 'app/assets/img/icons/left-short-arrow.svg' %}" alt="Image">
+                        </div>
+                        <div class="trending-btn-next">
+                            <img src="{% static 'app/assets/img/icons/right-short-arrow.svg' %}" alt="Image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {%endif%}
+            
+        <!-- Trending News End -->
+
+        <!-- Featured News Start -->
+        <div class="container {%if not trending_posts%}pt-100 {%endif%}">
+            <div class="row featured-news-three">
+                <div class="col-xl-6">
+                    <div class="news-card-eleven">
+                        {% with featured_posts.first as post %}
+                        <div class="news-card-img">
+                            <img src="{{ post.featured_image.url }}" alt="{{ post.image_alt_text }}">
+                        </div>
+                        <div class="news-card-info">
+                            <a href="{% url 'app:category_detail' post.category.slug %}" class="news-cat">{{ post.category.name }}</a>
+                            <h3><a href="{% url 'app:post_detail' post.slug %}">{{ post.title }}</a></h3>
+                            <p>{{post.content|striptags|safe|truncatewords:30}}</p>
+                            <ul class="news-metainfo list-style">
+                                <li class="author">
+                                    <i class="fi fi-rr-user"></i>&nbsp;
+                                    <a href="author.html">{{post.author}}</a>
+                                </li>
+                                <li><i class="fi fi-rr-calendar-minus"></i><a href="{% url 'app:post_detail' post.slug %}">{{ post.published_date|date:"M d, Y" }}</a></li>
+                                <li><i class="fi fi-rr-clock-three"></i>{{ post.reading_time }} Min Read</li>
+                            </ul>
+                        </div>
+                        {% endwith %}
+                    </div>
+                </div>
+
+                <div class="col-xl-6">
+                    <div class="featured-posts-section">
+                    <div class="row g-4">
+                            {% for post in featured_posts|slice:"1:5" %}
+                            <div class="col-md-6">
+                                <div class="news-card-thirteen">
+                                    <div class="news-card-img">
+                                        <img src="{{ post.featured_image.url }}" alt="{{ post.image_alt_text }}">
+                                        <a href="{% url 'app:category_detail' post.category.slug %}" class="news-cat">{{ post.category.name }}</a>
+                                    </div>
+                                    <div class="news-card-info">
+                                        <h3 class="news-title">
+                                            <a href="{% url 'app:post_detail' post.slug %}">{{ post.title }}</a>
+                                        </h3>
+                                        <ul class="news-metainfo">
+                                            <li>
+                                                <i class="fi fi-rr-calendar-minus"></i>
+                                                <a href="{% url 'app:post_detail' post.slug %}">{{ post.published_date|date:"M d, Y" }}</a>
+                                            </li>
+                                            <li>
+                                                <i class="fi fi-rr-clock-three"></i>{{ post.reading_time }} Min Read
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <!-- Featured News End -->
+{% comment %} 
+        <div class="container">
+            <div class="ad-section-two">
+                <p>SPONSORED AD</p>
+            </div>
+            <div class="promo-wrap">
+                <div class="promo-card-two">
+                    <img src="{% static 'app/assets/img/promo-shape-1.webp' %}" alt="Image" class="promo-shape">
+                    <div class="promo-content">
+                        <a href="index.html" class="logo">
+                            <img class="logo-light" src="{% static 'app/assets/img/logo.webp' %}" alt="Image">
+                            <img class="logo-dark" src="{% static 'app/assets/img/logo-white.webp' %}" alt="Image">
+                        </a>
+                        <p>The European languages are members of the same family separ existence is a Baxo. For science, music, sport, etc.</p>
+                    </div>
+                    <img src="{% static 'app/assets/img/promo-img-2.webp' %}" alt="Image" class="promo-img">
+                </div>
+            </div>
+        </div> {% endcomment %}
+
+        {% if latest_category_posts %}
+        <div class="editor-news-three pt-100 pb-75 latest-category-section">
+            <div class="container">
+                <div class="section-title-two mb-40">
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <h2>Latest From Categories</h2>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row justify-content-center">
+                    {% for item in latest_category_posts %}
+                    <div class="col-xl-4 col-lg-6 col-md-6">
+                        <div class="news-card-thirteen">
+                            {% if item.post.featured_image %}
+                            <div class="news-card-img">
+                                <img src="{{ item.post.featured_image.url }}" 
+                                    alt="{{ item.post.image_alt_text|default:item.post.title }}">
+                                <a href="{% url 'app:category_detail' item.category_slug %}" 
+                                class="news-cat">{{ item.category_name }}</a>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="news-card-info">
+                                <h3>
+                                    <a href="{% url 'app:post_detail' item.post.slug %}">{{ item.post.title }}</a>
+                                </h3>
+                                <ul class="news-metainfo list-style">
+                                    <li>
+                                        <i class="fi fi-rr-calendar-minus"></i>
+                                        <span>{{ item.post.published_date|date:"M d, Y" }}</span>
+                                    </li>
+                                    {% if item.post.reading_time %}
+                                    <li>
+                                        <i class="fi fi-rr-clock-three"></i>
+                                        <span>{{ item.post.reading_time }} Min Read</span>
+                                    </li>
+                                    {% endif %}
+                                    {% comment %} <li>
+                                        <i class="fi fi-rr-eye"></i>
+                                        <span>{{ item.post.views_count }} Views</span>
+                                    </li> {% endcomment %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+
+        <!-- Newsletter Section Start -->
+        <div class="container">
+            <div class="newsletter-box">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="newsletter-content">
+                            <h2><img src="{% static 'app/assets/img/newsletter-icon.webp' %}" alt="Image" class="newsletter-icon">Join Our Newsletter & Read The New Posts First</h2>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <form action="#" class="newsletter-form">
+                            <div class="form-group">
+                                <input type="email" placeholder="Email Address">
+                                <button type="button" class="btn-one">Subscribe<i class="flaticon-arrow-right"></i></button>
+                            </div>
+                            <div class="form-check checkbox">
+                                <input class="form-check-input" type="checkbox" id="test_2">
+                                <label class="form-check-label" for="test_2">
+                                    I've read and accept <a href="privacy-policy.html">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Newsletter Section End -->
+
+        <!-- Social Widget Start -->
+        {% comment %} <div class="container">
+            <ul class="social-widget-two list-style">
+                <li>
+                    <span><a href="https://www.fb.com/" target="_blank"><img src="{% static 'app/assets/img/icons/facebook.svg' %}" alt="Image"></a></span>
+                    <a href="https://www.fb.com/" target="_blank" class="social-link">
+                        Facebook
+                        <p>28 Likes</p>
+                    </a>
+                </li>
+                <li>
+                    <span><a href="https://www.twitter.com/" target="_blank"><img src="{% static 'app/assets/img/icons/twitter.svg' %}" alt="Image"></a></span>
+                    <a href="https://www.twitter.com/" target="_blank" class="social-link">
+                        Twitter
+                        <p>289k Follwers</p>
+                    </a>
+                </li>
+                <li>
+                    <span><a href="https://www.instagram.com/" target="_blank"><img src="{% static 'app/assets/img/icons/instagram.svg' %}" alt="Image"></a></span>
+                    <a href="https://www.instagram.com/" target="_blank" class="social-link">
+                        Instagram
+                        <p>231K Follwers</p>
+                    </a>
+                </li>
+                <li>
+                    <span><a href="https://www.pinterest.com/" target="_blank"><img src="{% static 'app/assets/img/icons/pinterest.svg' %}" alt="Image"></a></span>
+                    <a href="https://www.instagram.com/" target="_blank" class="social-link">
+                        Pinterest
+                        <p>28k Follwers</p>
+                    </a>
+                </li>
+                <li>
+                    <span><a href="https://www.youtube.com/" target="_blank"><img src="{% static 'app/assets/img/icons/youtube.svg' %}" alt="Image"></a></span>
+                    <a href="https://www.youtube.com/" target="_blank" class="social-link">
+                        Youtube
+                        <p>19k Subscriber</p>
+                    </a>
+                </li>
+                <li>
+                    <span><a href="https://www.soundcloud.com/" target="_blank"><img src="{% static 'app/assets/img/icons/soundcloud.svg' %}" alt="Image"></a></span>
+                    <a href="https://www.soundcloud.com/" target="_blank" class="social-link">
+                        Soundcloud
+                        <p>31k Follwers</p>
+                    </a>
+                </li>
+            </ul>
+        </div> {% endcomment %}
+        <!-- Social Widget End -->
+
+        <!-- Popular News Start -->
+        <div class="container ptb-100">
+            <div class="popular-news-slider swiper">
+                <div class="swiper-wrapper">
+                    {% for post in recent_posts %}
+                    <div class="swiper-slide pp-news-card">
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.image_alt_text }}">
+                        <div class="pp-news-info">
+                            <a href="{% url 'app:category_detail' post.category.slug %}" class="news-cat">{{ post.category.name }}</a>
+                            <h3><a href="{% url 'app:post_detail' post.slug %}">{{ post.title }}</a></h3>
+                            <ul class="news-metainfo list-style">
+                                <li class="author">
+                                    <i class="fi fi-rr-user"></i>&nbsp;
+                                    <a href="author.html">{{post.author}}</a>
+                                </li>
+                                <li><i class="fi fi-rr-clock-three"></i>{{ post.reading_time }} Min Read</li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% endfor %}
+                   
+                    
+                </div>
+            </div>
+        </div>
+        <!-- Popular News End -->
+
+        <!-- Featured Post Section Start -->
+        <!-- Featured Post Section Start -->
+<div class="selected-news-three pb-100">
+    <div class="container">
+        <div class="section-title-two mb-40">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2>Selected posts</h2>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <ul class="nav nav-tabs news-tablist-three" role="tablist">
+                        {% for item in categories_with_posts %}
+                        <li class="nav-item">
+                            <button class="nav-link {% if forloop.first %}active{% endif %}" 
+                                    data-bs-toggle="tab" 
+                                    data-bs-target="#tab_{{ item.category.slug }}" 
+                                    type="button" 
+                                    role="tab">
+                                {{ item.category.name }}<i class="flaticon-arrow-right"></i>
+                            </button>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content selected-news-content selected-section">
+            {% for item in categories_with_posts %}
+            <div class="tab-pane fade {% if forloop.first %}active show{% endif %}" 
+                 id="tab_{{ item.category.slug }}" 
+                 role="tabpanel">
+                <div class="row justify-content-center">
+                    {% for post in item.posts %}
+                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
+                        <div class="news-card-thirteen">
+                            <div class="featured-posts-section">
+                            <div class="news-card-img">
+                                <img src="{{ post.featured_image.url }}" alt="{{ post.image_alt_text }}">
+                                <a href="{% url 'app:category_detail' slug=item.category.slug %}" class="news-cat">
+                                    {{ item.category.name }}
+                                </a>
+                            </div>
+                            </div>
+                            <div class="news-card-info">
+                                <h3>
+                                    <a href="{% url 'app:post_detail' slug=post.slug %}">{{ post.title }}</a>
+                                </h3>
+                                <ul class="news-metainfo list-style">
+                                    <li>
+                                        <i class="fi fi-rr-calendar-minus"></i>
+                                        <a href="{% url 'app:posts_by_date' year=post.published_date.year month=post.published_date.month %}">
+                                            {{ post.published_date|date:"M d, Y" }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <i class="fi fi-rr-clock-three"></i>
+                                        {{ post.reading_time }} Min Read
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>No posts available for this category.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% comment %} <a href="{% url 'app:all_posts' %}" class="btn-three d-block w-100">
+            View All News<i class="flaticon-arrow-right"></i>
+        </a> {% endcomment %}
+    </div>
+</div>
+
+        <!-- Featured Post Section End -->
+
+        <!-- Popular Section Start -->
+        <div class="popular-news-three pb-100">
+            <div class="container">
+                <div class="row gx-5">
+                    <div class="col-lg-8">
+                        <div class="section-title-two mb-40">
+                            <div class="row align-items-center">
+                                <div class="col-md-7"><h2>Most Popular</h2></div>
+                                <div class="col-md-5 text-md-end">
+                                    <a href="{% url 'app:popular_section' %}" class="link-three">View All Blog<span><img src="{% static 'app/assets/img/icons/arrow-right.svg' %}" alt="Image"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="popular-news-wrap famous">
+                            {% for post in popular_posts|slice:6 %}
+                            <div class="news-card-five">
+                                <div class="news-card-img">
+                                    <img src="{{post.featured_image.url}}" alt="{{post.image_alt_text}}">
+                                    <a href="{% url 'app:category_detail' post.category.slug %}" class="news-cat">{{post.category.name}}</a>
+                                </div>
+                                <div class="news-card-info">
+                                    <h3><a href="{% url 'app:post_detail' post.slug %}">{{post.title}}</a></h3>
+                                    <p>{{post.content|safe|truncatewords:23}}</p>
+                                    <ul class="news-metainfo list-style">
+                                        <li class="author">
+                                            <i class="fi fi-rr-user"></i>&nbsp;
+                                            <a href="author.html">{{post.author}}</a>
+                                        </li>
+                                        <li><i class="fi fi-rr-calendar-minus"></i><a href="{% url 'app:post_detail' post.slug %}">{{ post.published_date|date:"M d, Y" }}</a></li>
+                                        <li><i class="fi fi-rr-clock-three"></i>{{ post.reading_time }} Min Read</li>
+                                    </ul>
+                                </div>
+                            </div>{% endfor %}
+                           
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="sidebar">
+                            <div class="sidebar-widget">
+                                <h3 class="sidebar-widget-title">Explore Topics</h3>
+                                <ul class="category-widget list-style">
+                                    <li><a href="business.html"><img src="{% static 'app/assets/img/icons/arrow-right.svg' %}" alt="Image">Celebration <span>(6)</span></a></li>
+                                    <li><a href="business.html"><img src="{% static 'app/assets/img/icons/arrow-right.svg' %}" alt="Image">Culture<span>(3)</span></a></li>
+                                    <li><a href="business.html"><img src="{% static 'app/assets/img/icons/arrow-right.svg' %}" alt="Image">Fashion<span>(2)</span></a></li>
+                                    <li><a href="business.html"><img src="{% static 'app/assets/img/icons/arrow-right.svg' %}" alt="Image">Inspiration<span>(8)</span></a></li>
+                                    <li><a href="business.html"><img src="{% static 'app/assets/img/icons/arrow-right.svg' %}" alt="Image">Lifestyle<span>(6)</span></a></li>
+                                    <li><a href="business.html"><img src="{% static 'app/assets/img/icons/arrow-right.svg' %}" alt="Image">Politics<span>(2)</span></a></li>
+                                    <li><a href="business.html"><img src="{% static 'app/assets/img/icons/arrow-right.svg' %}" alt="Image">Trending<span>(4)</span></a></li>
+                                </ul>
+                            </div>
+                            <div class="sidebar-widget-two">
+                                <div class="contact-widget">
+                                    <img src="{% static 'app/assets/img/contact-bg.svg' %}" alt="Image" class="contact-shape">
+                                    <a href="index.html" class="logo">
+                                        <img class="logo-light" src="{% static 'app/assets/img/logo.webp' %}" alt="Image">
+                                        <img class="logo-dark" src="{% static 'app/assets/img/logo-white.webp' %}" alt="Image">
+                                    </a>
+                                    <p>Mauris mattis auctor cursus. Phasellus iso tellus tellus, imperdiet ut imperdiet eu, noiaculis a sem Donec vehicula luctus nunc in laoreet Aliquam</p>
+                                    <ul class="social-profile list-style">
+                                        <li><a href="https://www.fb.com/" target="_blank"><i class="flaticon-facebook-1"></i></a></li>
+                                        <li><a href="https://www.twitter.com/" target="_blank"><i class="flaticon-twitter-1"></i></a></li>
+                                        <li><a href="https://www.instagram.com/" target="_blank"><i class="flaticon-instagram-2"></i></a></li>
+                                        <li><a href="https://www.linkedin.com/" target="_blank"><i class="flaticon-linkedin"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="sidebar-widget">
+                                <h3 class="sidebar-widget-title">Recommended</h3>
+                                <div class="pp-post-wrap-two">
+                                    <div class="news-card-one">
+                                        <div class="news-card-img">
+                                            <img src="{% static 'app/assets/img/news/news-thumb-4.webp' %}" alt="Image">
+                                        </div>
+                                        <div class="news-card-info">
+                                            <h3><a href="business-details.html">Bernie Nonummy Pelopai Iatis Eum Litora</a></h3>
+                                            <ul class="news-metainfo list-style">
+                                                <li><i class="fi fi-rr-calendar-minus"></i><a href="news-by-date.html">Apr 22, 2024</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="news-card-one">
+                                        <div class="news-card-img">
+                                            <img src="{% static 'app/assets/img/news/news-thumb-5.webp' %}" alt="Image">
+                                        </div>
+                                        <div class="news-card-info">
+                                            <h3><a href="business-details.html">How Youth Viral Diseases May The Year 2023</a></h3>
+                                            <ul class="news-metainfo list-style">
+                                                <li><i class="fi fi-rr-calendar-minus"></i><a href="news-by-date.html">Apr 23, 2024</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="news-card-one">
+                                        <div class="news-card-img">
+                                            <img src="{% static 'app/assets/img/news/news-thumb-6.webp' %}" alt="Image">
+                                        </div>
+                                        <div class="news-card-info">
+                                            <h3><a href="business-details.html">Man Wearing Black Pullover Hoodie To Smoke</a></h3>
+                                            <ul class="news-metainfo list-style">
+                                                <li><i class="fi fi-rr-calendar-minus"></i><a href="news-by-date.html">Apr 14, 2024</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="news-card-one">
+                                        <div class="news-card-img">
+                                            <img src="{% static 'app/assets/img/news/news-thumb-7.webp' %}" alt="Image">
+                                        </div>
+                                        <div class="news-card-info">
+                                            <h3><a href="business-details.html">First Prototype Flight Using Kinetic Launch System</a></h3>
+                                            <ul class="news-metainfo list-style">
+                                                <li><i class="fi fi-rr-calendar-minus"></i><a href="news-by-date.html">Apr 07, 2024</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Popular Section End -->
+
+        <!-- General News Section Start -->
+        <div class="general-news-three pb-75">
+            <div class="container">
+                <div class="row gx-55 gx-4">
+                    
+                    <div class="col-xl-12">
+                        <div class="section-title-two mb-40">
+                            <div class="row align-items-center">
+                                <div class="col-md-7"><h2>Latest Blog</h2></div>
+                                <div class="col-md-5 text-md-end">
+                                    <a href="{% url 'app:latest_section' %}" class="link-three">View All Blog<span><img src="{% static 'app/assets/img/icons/arrow-right.svg' %}" alt="Image"></span></a>                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {% with all_published_posts.first as post%}
+                            <div class="col-12">
+                                <div class="news-card-four">
+                                    <img src="{{ post.featured_image.url }}" alt="{{ post.image_alt_text }}">
+                                    <div class="news-card-info">
+                                        <a href="{% url 'app:category_detail' post.category.slug %}" class="news-cat">{{post.category.name}}</a>
+                                        <h3><a href="{% url 'app:post_detail' post.slug %}">{{ post.title }}</a></h3>
+                                        <ul class="news-metainfo list-style">
+                                            <li><i class="fi fi-rr-calendar-minus"></i><a href="{% url 'app:post_detail' post.slug %}">{{ post.published_date|date:"M d, Y" }}</a></li>
+                            <li><i class="fi fi-rr-clock-three"></i>{{ post.reading_time }} Min Read</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            {% for post in all_published_posts|slice:"1:"%}
+                            <div class="col-md-4">
+                                <div class="news-card-two">
+                                    <div class="published">
+                                    <div class="news-card-img">
+                                        <img src="{{ post.featured_image.url }}" alt="{{ post.image_alt_text }}">
+                                        <a href="{% url 'app:category_detail' post.category.slug %}" class="news-cat">{{post.category.name}}</a>
+                                    </div>
+                                    </div>
+                                    <div class="news-card-info">
+                                        <h3><a href="{% url 'app:post_detail' post.slug %}">{{ post.title }}</a></h3>
+                                        <ul class="news-metainfo list-style">
+                                            <li><i class="fi fi-rr-calendar-minus"></i><a href="{% url 'app:post_detail' post.slug %}">{{ post.published_date|date:"M d, Y" }}</a></li>
+                                            <li><i class="fi fi-rr-clock-three"></i>{{ post.reading_time }} Min Read</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- General News Section End -->
+
+
+{%endblock%}

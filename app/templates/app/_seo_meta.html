@@ -1,0 +1,53 @@
+{% if post %}
+    <!-- Primary Meta Tags -->
+    <title>{{ post.meta_title|default:post.title }}</title>
+    <meta name="description" content="{{ post.meta_description|safe}}">
+    <meta name="keywords" content="{{ post.focus_keyword }}{% if post.secondary_keywords %}, {{ post.secondary_keywords }}{% endif %}">
+    <meta name="robots" content="{{ post.meta_robots }}">
+
+    <!-- Canonical URL -->
+    {% if post.canonical_url %}
+    <link rel="canonical" href="{{ post.canonical_url }}">
+    {% else %}
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    {% endif %}
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{{ post.og_type }}">
+    <meta property="og:title" content="{{ post.meta_title|default:post.title }}">
+    <meta property="og:description" content="{{ post.meta_description|safe}}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    {% if post.og_image %}
+    <meta property="og:image" content="{{ post.og_image.url }}">
+    {% elif post.featured_image %}
+    <meta property="og:image" content="{{ post.featured_image.url }}">
+    {% endif %}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="{{ post.twitter_card_type }}">
+    <meta name="twitter:title" content="{{ post.meta_title|default:post.title }}">
+    <meta name="twitter:description" content="{{ post.meta_description|safe}}">
+    {% if post.og_image %}
+    <meta name="twitter:image" content="{{ post.og_image.url }}">
+    {% elif post.featured_image %}
+    <meta name="twitter:image" content="{{ post.featured_image.url }}">
+    {% endif %}
+
+    <!-- Article Specific Meta -->
+    {% if post.author %}
+    <meta name="author" content="{{ post.author.get_full_name|default:post.author.username }}">
+    {% endif %}
+    {% if post.published_date %}
+    <meta property="article:published_time" content="{{ post.published_date|date:'c' }}">
+    {% endif %}
+    {% if post.updated_date %}
+    <meta property="article:modified_time" content="{{ post.updated_date|date:'c' }}">
+    {% endif %}
+
+    <!-- Structured Data -->
+    {% if post.structured_data %}
+    <script type="application/ld+json">
+        {{ post.structured_data|safe }}
+    </script>
+    {% endif %}
+{% endif %}
